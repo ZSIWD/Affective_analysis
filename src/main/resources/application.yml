@@ -1,0 +1,22 @@
+server:
+  port: 8080
+# 数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/weibo?serverTimezone=UTC
+    username: root
+    password: ZS113799a
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.hxt.pojo.entity
+  configuration:
+    # 开启驼峰命名
+    map-underscore-to-camel-case: true
+# jwt配置
+affective:
+  jwt:
+    jwt-secret-key: ponder
+    jwt-ttl: 7200000
+    jwt-token-name: token
