@@ -17,13 +17,13 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
      *
      * @param registry
      */
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtUserInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/sysUser/register","/sysUser/login");
-
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(jwtUserInterceptor)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/sysUser/register","/sysUser/login");
+//
+//    }
 }
 
 
