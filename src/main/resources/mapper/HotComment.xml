@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hxt.web.mapper.HotCommentMapper">
+
+
+    <select id="selectXinQi" resultType="com.hxt.pojo.ov.XinQiOv">
+        SELECT
+        COUNT(*) AS `value`,
+        CASE DAYOFWEEK(commentTime)
+        WHEN 1 THEN '星期日'
+        WHEN 2 THEN '星期一'
+        WHEN 3 THEN '星期二'
+        WHEN 4 THEN '星期三'
+        WHEN 5 THEN '星期四'
+        WHEN 6 THEN '星期五'
+        WHEN 7 THEN '星期六'
+        END AS `name`
+        FROM hot_comment
+        WHERE label &lt; 0
+        GROUP BY `name`;
+    </select>
+    <select id="getDepressionProp" resultType="com.hxt.pojo.ov.DepressionPropVo">
+        SELECT
+            labeled_comments.city,
+            label_level,
+            COUNT(*) AS depNum,
+            total_city_comments.total_depNum
+        FROM
+            (
+                SELECT
+                    city,
+                    CASE
+                        WHEN label &lt;= -0.8 AND label &gt;= -1 THEN '重度抑郁'
+                        WHEN label &gt; -0.8 AND label &lt;= -0.5 THEN '中度抑郁'
+                        WHEN label &lt; 0 AND label &gt; -0.5 THEN '轻度抑郁'
+                        END AS label_level
+                FROM
+                    hot_comment
+                WHERE label &lt; 0
+            ) AS labeled_comments
+                JOIN
+            (
+                SELECT
+                    city,
+                    COUNT(*) AS total_depNum
+                FROM
+                    hot_comment
+                WHERE label &lt; 0
+                GROUP BY city
+            ) AS total_city_comments ON labeled_comments.city = total_city_comments.city
+        GROUP BY
+            labeled_comments.city,
+            label_level,
+            total_city_comments.total_depNum
+        ORDER BY
+            total_city_comments.total_depNum DESC,
+            labeled_comments.city DESC,
+            label_level
+    </select>
+</mapper>
