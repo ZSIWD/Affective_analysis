@@ -17,45 +17,73 @@
         WHEN 7 THEN '星期六'
         END AS `name`
         FROM hot_comment
-        WHERE label &lt; 0
+        WHERE label &lt; -0.5
         GROUP BY `name`;
     </select>
     <select id="getDepressionProp" resultType="com.hxt.pojo.ov.DepressionPropVo">
         SELECT
-            labeled_comments.city,
-            label_level,
-            COUNT(*) AS depNum,
-            total_city_comments.total_depNum
+        SUBSTRING(city, 3) as city,
+        SUM(CASE WHEN label_level = '重度抑郁' THEN depNum ELSE 0 END) / total_depNum * 100 AS hardlevel,
+        SUM(CASE WHEN label_level = '中度抑郁' THEN depNum ELSE 0 END) / total_depNum * 100 AS midlevel,
+        SUM(CASE WHEN label_level = '轻度抑郁' THEN depNum ELSE 0 END) / total_depNum * 100 AS lightlevel
         FROM
-            (
-                SELECT
-                    city,
-                    CASE
-                        WHEN label &lt;= -0.8 AND label &gt;= -1 THEN '重度抑郁'
-                        WHEN label &gt; -0.8 AND label &lt;= -0.5 THEN '中度抑郁'
-                        WHEN label &lt; 0 AND label &gt; -0.5 THEN '轻度抑郁'
-                        END AS label_level
-                FROM
-                    hot_comment
-                WHERE label &lt; 0
-            ) AS labeled_comments
-                JOIN
-            (
-                SELECT
-                    city,
-                    COUNT(*) AS total_depNum
-                FROM
-                    hot_comment
-                WHERE label &lt; 0
-                GROUP BY city
-            ) AS total_city_comments ON labeled_comments.city = total_city_comments.city
+        (
+        SELECT
+        labeled_comments.city,
+        label_level,
+        COUNT(*) AS depNum,
+        total_city_comments.total_depNum
+        FROM
+        (
+        SELECT
+        city,
+        CASE
+        WHEN label &lt;= -0.95 AND label &gt;= -1 THEN '重度抑郁'
+        WHEN label &gt; -0.95 AND label &lt;= -0.8 THEN '中度抑郁'
+        WHEN label &lt; -0.5 AND label &gt; -0.8 THEN '轻度抑郁'
+        END AS label_level
+        FROM
+        hot_comment
+        WHERE label &lt; -0.5
+        ) AS labeled_comments
+        JOIN
+        (
+        SELECT
+        city,
+        COUNT(*) AS total_depNum
+        FROM
+        hot_comment
+        WHERE label &lt; -0.5
+        GROUP BY city
+        ) AS total_city_comments ON labeled_comments.city = total_city_comments.city
         GROUP BY
-            labeled_comments.city,
-            label_level,
-            total_city_comments.total_depNum
+        labeled_comments.city,
+        label_level,
+        total_city_comments.total_depNum
+        ) AS grouped_data
+        GROUP BY
+        city,
+        total_depNum
         ORDER BY
-            total_city_comments.total_depNum DESC,
-            labeled_comments.city DESC,
-            label_level
+        total_depNum DESC,
+        city DESC
+
+    </select>
+
+    <select id="getDepLevelPercentage" resultType="com.hxt.pojo.ov.DepLevelOv" parameterType="String">
+        SELECT
+        SUM(CASE WHEN label &lt; 0 AND label &gt;= -0.6 THEN 1 ELSE 0 END) AS levelCount1,
+        SUM(CASE WHEN label &lt; -0.6 AND label &gt; -0.9 THEN 1 ELSE 0 END) AS levelCount2,
+        SUM(CASE WHEN label &lt;=-0.9 AND label &gt;-1 THEN 1 ELSE 0 END) AS levelCount3,
+        COUNT(*) AS totalCount,
+        (SUM(CASE WHEN label &lt; 0 AND label &gt;= -0.6 THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS levelPercentage1,
+        (SUM(CASE WHEN label &lt; -0.6 AND label &gt; -0.9 THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS levelPercentage2,
+        (SUM(CASE WHEN label &lt;=-0.9 AND label &gt;= -1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS levelPercentage3
+        FROM
+        hot_comment
+        <where>
+            label &lt; 0
+            AND commentTime &lt;= #{commentTime}
+        </where>
     </select>
 </mapper>

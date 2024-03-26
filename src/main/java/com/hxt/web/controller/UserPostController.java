@@ -24,6 +24,7 @@ public class UserPostController {
      */
     @PostMapping("/getCommentByUser")
     private Result getCommentByUser(@RequestBody UserPostDTO userPostDTO) {
+        System.out.println(userPostDTO);
             PageResult result = userPostService.getCommentByUser(userPostDTO);
             return Result.success(result);
     }

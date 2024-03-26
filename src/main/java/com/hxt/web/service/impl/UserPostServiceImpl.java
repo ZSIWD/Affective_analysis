@@ -20,6 +20,7 @@ public class UserPostServiceImpl implements UserPostService {
         PageHelper.startPage(userPostDTO.getPage(),userPostDTO.getSize());
         String userName = userPostDTO.getUserName();
         Page<UserPost> postByUser = userPostMapper.getCommentByUser(userName);
+        System.out.println(postByUser);
         PageResult pageResult = new PageResult();
         pageResult.setRecords(postByUser);
         pageResult.setTotal(postByUser.getTotal());

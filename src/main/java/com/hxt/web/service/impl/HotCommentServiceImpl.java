@@ -2,11 +2,15 @@ package com.hxt.web.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hxt.pojo.dto.PageDTO;
 import com.hxt.pojo.entity.HotComment;
+import com.hxt.pojo.ov.CityProp;
+import com.hxt.pojo.ov.DepLevelOv;
 import com.hxt.pojo.ov.DepressionPropVo;
 import com.hxt.pojo.ov.XinQiOv;
+import com.hxt.result.PageResult;
 import com.hxt.web.mapper.HotCommentMapper;
 import com.hxt.web.service.HotCommentService;
 import jakarta.annotation.Resource;
@@ -36,53 +40,30 @@ public class HotCommentServiceImpl implements HotCommentService {
 
 
     @Override
-    public List<DepressionPropVo> getDepressionProp() {
-        // 创建一个包含数据的列表
-        List<Map<String, Object>> dataArray = new ArrayList<>();
+    public CityProp getDepressionProp(PageDTO pageDTO) {
+        PageHelper.startPage(1, pageDTO.getSize());
 
-        // 添加重度抑郁数据
-        Map<String, Object> severeDepression = new HashMap<>();
-        severeDepression.put("name", "重度抑郁");
-        severeDepression.put("type", "bar");
-        severeDepression.put("stack", "total");
-        severeDepression.put("label", Map.of("show", true));
-        severeDepression.put("emphasis", Map.of("focus", "series"));
-        severeDepression.put("data", List.of(137, 80, 86, 72, 67, 49, 56));
-        dataArray.add(severeDepression);
+        Page<DepressionPropVo> depressionProp = hotCommentMapper.getDepressionProp();
+        List city = new ArrayList<String>();
+        List hardData = new ArrayList<Float>();
+        List midData = new ArrayList<Float>();
+        List lightData = new ArrayList<Float>();
 
-        // 添加中度抑郁数据
-        Map<String, Object> moderateDepression = new HashMap<>();
-        moderateDepression.put("name", "中度抑郁");
-        moderateDepression.put("type", "bar");
-        moderateDepression.put("stack", "total");
-        moderateDepression.put("label", Map.of("show", true));
-        moderateDepression.put("emphasis", Map.of("focus", "series"));
-        moderateDepression.put("data", List.of(187, 107, 100, 103, 91, 106, 68));
-        dataArray.add(moderateDepression);
-
-        // 添加轻度抑郁数据
-        Map<String, Object> mildDepression = new HashMap<>();
-        mildDepression.put("name", "轻度抑郁");
-        mildDepression.put("type", "bar");
-        mildDepression.put("stack", "total");
-        mildDepression.put("label", Map.of("show", true));
-        mildDepression.put("emphasis", Map.of("focus", "series"));
-        mildDepression.put("data", List.of(330, 193, 190, 168, 151, 133, 104));
-        dataArray.add(mildDepression);
-
-        // 将列表转换为JSON字符串
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonData = null;
-        try {
-            jsonData = objectMapper.writeValueAsString(dataArray);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        for (DepressionPropVo d:depressionProp) {
+           city.add(d.getCity());
+           hardData.add(d.getHardlevel());
+           midData.add(d.getMidlevel());
+           lightData.add(d.getLightlevel());
         }
-        try {
-            return objectMapper.readValue(jsonData, List.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        CityProp cityProp = new CityProp();
+        cityProp.setCity(city);
+        cityProp.setLightData(lightData);
+        cityProp.setMidData(midData);
+        cityProp.setHardData(hardData);
+
+
+        return cityProp;
+
     }
 
 
@@ -90,5 +71,13 @@ public class HotCommentServiceImpl implements HotCommentService {
     public List<XinQiOv> getXinQi() {
 
         return hotCommentMapper.selectXinQi();
+    }
+
+
+    @Override
+    public DepLevelOv getDepLevelPercentage(String currentTime) {
+        DepLevelOv dp = hotCommentMapper.getDepLevelPercentage(currentTime);
+        System.out.println(dp);
+        return dp;
     }
 }
