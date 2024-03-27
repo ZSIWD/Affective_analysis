@@ -2,6 +2,8 @@ package com.hxt.web.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hxt.constant.LineDataConstant;
+import com.hxt.pojo.dto.LineDataVo;
 import com.hxt.pojo.dto.UserPostDTO;
 import com.hxt.pojo.entity.UserPost;
 import com.hxt.result.PageResult;
@@ -25,6 +27,14 @@ public class UserPostServiceImpl implements UserPostService {
         pageResult.setRecords(postByUser);
         pageResult.setTotal(postByUser.getTotal());
         return pageResult;
+    }
+
+    @Override
+    public LineDataVo getLineData() {
+        LineDataVo lineDataVo = new LineDataVo();
+        lineDataVo.setMale(LineDataConstant.MALE);
+        lineDataVo.setFemale(LineDataConstant.FEMALE);
+        return lineDataVo;
     }
 }
 
