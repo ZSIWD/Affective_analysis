@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hxt.web.mapper.HotSearchMapper">
+   <select id="getHotSearch" resultType="com.hxt.pojo.ov.HotSearchVO">
+      SELECT
+      hotNewsLine,hotNewsTitle,
+      COUNT(*) AS total_count,-- 计算每个 hotNewsTitle 的总数
+      SUM( CASE WHEN hotNewsLabel &lt; - 0.8 THEN 1 ELSE 0 END ) AS n_count,-- 计算 hotNewsLabel 小于 -0.8 的记录数
+      SUM( CASE WHEN hotNewsLabel &gt;= - 0.8 THEN 1 ELSE 0 END ) AS p_count,-- 计算 hotNewsLabel 大于等于 -0.8 的记录数
+      ROUND(( SUM( CASE WHEN hotNewsLabel &lt; - 0.8 THEN 1 ELSE 0 END ) * 100.0 / COUNT(*)), 2 ) AS p_percentage,-- 计算并四舍五入保留两位小数的占比
+      ROUND(( SUM( CASE WHEN hotNewsLabel &gt;= - 0.8 THEN 1 ELSE 0 END ) * 100.0 / COUNT(*)), 2 ) AS n_percentage -- 计算并四舍五入保留两位小数的占比
+
+      FROM
+      hotsearch where isDisabled = 0
+      GROUP BY
+      hotNewsTitle
+   </select>
+
+   <select id="getDetails" resultType="com.hxt.pojo.ov.HotSearchDetailsVO">
+      SELECT userName, REGEXP_REPLACE(REPLACE(hotSearchComment, hotNewsTitle, ""),'[[:space:]]+',"") AS hotSearchComment, hotSearchTime,hotNewsLabel
+      FROM hotsearch
+      WHERE hotNewsLine = #{hotNewsLine}
+   </select>
+</mapper>
