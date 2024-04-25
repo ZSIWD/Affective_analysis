@@ -36,4 +36,16 @@ public class HotSearchController {
         hotSearchService.repealHotSearch(hotNewsLine);
         return Result.success();
     }
+
+    @GetMapping("/getHotSearchByUser")
+    public Result<List<HotSearchVO>> getHotSearchByUser(String username){
+        List<HotSearchVO> hotSearch = hotSearchService.getHotSearchByUser(username);
+        return Result.success(hotSearch);
+    }
+
+    @GetMapping("/getHotSearchChart")
+    public Result<List<String>> getHotSearchChart(){
+        List<String> hotSearchChart = hotSearchService.getHotSearchChart();
+        return Result.success(hotSearchChart);
+    }
 }

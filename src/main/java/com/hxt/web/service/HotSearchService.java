@@ -14,4 +14,8 @@ public interface HotSearchService {
     List<HotSearchDetailsVO> getDetails(PageDTO pageDTO,Integer hotNewsLine);
 
     void repealHotSearch(Integer hotNewsLine);
+
+    List<HotSearchVO> getHotSearchByUser(String username);
+
+    List<String> getHotSearchChart();
 }

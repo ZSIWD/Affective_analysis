@@ -21,8 +21,7 @@ public class HotSearchSearchImpl implements HotSearchService {
         Integer page = pageDTO.getPage();
         Integer size = pageDTO.getSize();
         PageHelper.startPage(page,size);
-        List<HotSearchVO> hotSearch = hotSearchMapper.getHotSearch();
-        return hotSearch;
+        return hotSearchMapper.getHotSearch();
     }
 
     @Override
@@ -30,12 +29,21 @@ public class HotSearchSearchImpl implements HotSearchService {
         Integer page = pageDTO.getPage();
         Integer size = pageDTO.getSize();
         PageHelper.startPage(page,size);
-        List<HotSearchDetailsVO> details = hotSearchMapper.getDetails(hotNewsLine);
-        return details;
+        return hotSearchMapper.getDetails(hotNewsLine);
     }
 
     @Override
     public void repealHotSearch(Integer hotNewsLine) {
         hotSearchMapper.repeal(hotNewsLine);
+    }
+
+    @Override
+    public List<HotSearchVO> getHotSearchByUser(String username) {
+        return hotSearchMapper.getHotSearchByUser(username);
+    }
+
+    @Override
+    public List<String> getHotSearchChart() {
+        return hotSearchMapper.getHotSearchChart();
     }
 }
