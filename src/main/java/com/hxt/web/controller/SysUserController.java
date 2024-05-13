@@ -24,7 +24,11 @@ public class SysUserController {
     @Resource
     private JwtProperties jwtProperties;
 
-    //登录
+    /**
+     * 登录
+     * @param sysUserDTO
+     * @return
+     */
     @PostMapping("/login")
     private Result<SysUserOv> login(@RequestBody SysLoginDTO sysUserDTO){
         SysUser sysUser = sysUserService.login(sysUserDTO);

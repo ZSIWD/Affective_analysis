@@ -17,16 +17,19 @@ public class UserPostController {
     private UserPostService userPostService;
 
     /**
-     * 通过用户名得到发表的
+     * 通过用户名得到用户情感分析数据
      * @return
      */
     @PostMapping("/getCommentByUser")
     private Result getCommentByUser(@RequestBody UserPostDTO userPostDTO) {
-        System.out.println(userPostDTO);
-            PageResult result = userPostService.getCommentByUser(userPostDTO);
-            return Result.success(result);
+        PageResult result = userPostService.getCommentByUser(userPostDTO);
+        return Result.success(result);
     }
 
+    /**
+     * 获得男女比例图数据
+     * @return
+     */
     @GetMapping("/getLineData")
     private Result getLineData() {
         LineDataVo result = userPostService.getLineData();

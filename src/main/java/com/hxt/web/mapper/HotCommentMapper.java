@@ -14,6 +14,10 @@ import java.util.List;
 @Mapper
 public interface HotCommentMapper {
 
+    /**
+     * 获取所有热评数据
+     * @return
+     */
     @Select("select * from hot_comment order by commentTime desc")
     List<HotComment> getHotCommentByPage();
 
@@ -36,6 +40,9 @@ public interface HotCommentMapper {
 
     DepLevelOv getDepLevelPercentage(String currentTime);
 
-
-
+    /**
+     * 获取重度抑郁热评
+     * @return
+     */
+    List<HotComment> getDeepHotCommentByPage();
 }

@@ -2,10 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hxt.web.mapper.UserPostMapper">
+    <!--根据用户名得到用户情感分析数据-->
     <select id="getCommentByUser" resultType="com.hxt.pojo.entity.UserPost">
         select * from userpost
         <if test="userName != null">
             where userName = #{userName}
         </if>
     </select>
+
+
+<!--    月份男女抑郁度占比-->
+    <select id="getSexCount" resultType="String">
+        SELECT
+            userSex,
+            COUNT(*) AS userCount,
+            ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM userpost), 2) AS userPercentage
+        FROM comments_table
+        GROUP BY userSex;
+    </select>
+
+    <!--获得每个月男女抑郁占比-->
+    <select id="getSexCountByMonth" resultType="com.hxt.pojo.ov.UserSexCount">
+        SELECT
+            userSex,
+            MONTH(postTime) AS month,
+            SUM(CASE WHEN label BETWEEN -0.8 AND -0.5 THEN 1 ELSE 0 END) AS mildDepressionCount,
+            SUM(CASE WHEN label BETWEEN -0.8 AND -0.5 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS mildDepressionPercentage,
+            SUM(CASE WHEN label BETWEEN -0.8 AND -0.95 THEN 1 ELSE 0 END) AS moderateDepressionCount,
+            SUM(CASE WHEN label BETWEEN -0.8 AND -0.95 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS moderateDepressionPercentage,
+            SUM(CASE WHEN label BETWEEN -0.95 AND -1 THEN 1 ELSE 0 END) AS severeDepressionCount,
+            SUM(CASE WHEN label BETWEEN -0.95 AND -1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS severeDepressionPercentage
+        FROM comments_table
+        GROUP BY userSex, MONTH(postTime);
+    </select>
+
 </mapper>

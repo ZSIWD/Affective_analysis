@@ -23,9 +23,25 @@ public class HotCommentController {
     private HotCommentService hotCommentService;
 
 
+    /**
+     * 获取热搜评论
+     * @param pageDTO
+     * @return
+     */
     @PostMapping("/getHotComment")
     private Result<List<HotComment>> getHotCommentByPage(@RequestBody PageDTO pageDTO){
         List<HotComment> hotComments = hotCommentService.getHotCommentByPage(pageDTO);
+        return Result.success(hotComments);
+    }
+
+    /**
+     * 获取重度抑郁的热搜评论
+     * @param pageDTO
+     * @return
+     */
+    @PostMapping("/getDeepHotComment")
+    private Result<List<HotComment>> getDeepHotComment(@RequestBody PageDTO pageDTO){
+        List<HotComment> hotComments = hotCommentService.getDeepHotCommentByPage(pageDTO);
         return Result.success(hotComments);
     }
 
@@ -35,7 +51,6 @@ public class HotCommentController {
     @PostMapping("/getDepressionProp")
     private Result<CityProp> getDepressionProp(@RequestBody PageDTO pageDTO){
         CityProp depressionProp = hotCommentService.getDepressionProp(pageDTO);
-
         return Result.success(depressionProp);
     }
 
@@ -50,8 +65,7 @@ public class HotCommentController {
     }
 
     /**
-     * 获取星期抑郁数据
-     * id 表示第几次刷新
+     * 获取每种抑郁程度的占比，对应抑郁类型占比分析功能
      */
     @GetMapping("/getDePercentage/{id}")
     private Result<DepLevelOv> getDePercentage(@PathVariable Integer id){

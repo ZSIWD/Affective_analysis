@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hxt.web.mapper.HotCommentMapper">
 
-
+    <!--获取每个星期抑郁评论数-->
     <select id="selectXinQi" resultType="com.hxt.pojo.ov.XinQiOv">
         SELECT
         COUNT(*) AS `value`,
@@ -20,6 +20,8 @@
         WHERE label &lt; -0.5
         GROUP BY `name`;
     </select>
+
+    <!--获取每种程度抑郁在不同城市的占比的情况-->
     <select id="getDepressionProp" resultType="com.hxt.pojo.ov.DepressionPropVo">
         SELECT
         SUBSTRING(city, 3) as city,
@@ -70,6 +72,7 @@
 
     </select>
 
+    <!--获取每种抑郁程度的总的占比情况-->
     <select id="getDepLevelPercentage" resultType="com.hxt.pojo.ov.DepLevelOv" parameterType="String">
         SELECT
         SUM(CASE WHEN label &lt; 0 AND label &gt;= -0.6 THEN 1 ELSE 0 END) AS levelCount1,
@@ -85,5 +88,10 @@
             label &lt; 0
             AND commentTime &lt;= #{commentTime}
         </where>
+    </select>
+
+    <!--获取抑郁度为重度的所有热评，按照时间排序-->
+    <select id="getDeepHotCommentByPage" resultType="com.hxt.pojo.entity.HotComment">
+        select * from hot_comment where label &lt; -0.95 order by commentTime desc
     </select>
 </mapper>

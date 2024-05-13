@@ -19,30 +19,55 @@ public class HotSearchController {
     @Resource
     private HotSearchService hotSearchService;
 
+    /**
+     * 获取所有热搜
+     * @param pageDTO
+     * @return
+     */
     @PostMapping("/getHotSearch")
     public Result<List<HotSearchVO>> getHotSearch(@RequestBody PageDTO pageDTO) {
         List<HotSearchVO> hotSearch = hotSearchService.getHotSearch(pageDTO);
         return Result.success(hotSearch);
     }
 
+    /**
+     * 获取热搜详情
+     * @param pageDTO
+     * @param hotNewsLine
+     * @return
+     */
     @PostMapping("/getHotSearchDetails/{id}")
     public Result<List<HotSearchDetailsVO>> getHotSearchDetails(@RequestBody PageDTO pageDTO,@PathVariable("id") Integer hotNewsLine){
         List<HotSearchDetailsVO> details = hotSearchService.getDetails(pageDTO,hotNewsLine);
         return Result.success(details);
     }
 
+    /**
+     * 撤销热搜
+     * @param hotNewsLine
+     * @return
+     */
     @PutMapping("/repealHotSearch/{id}")
     public Result repealHotSearch(@PathVariable("id") Integer hotNewsLine){
         hotSearchService.repealHotSearch(hotNewsLine);
         return Result.success();
     }
 
+    /**
+     * 获取某个用户评论的热搜
+     * @param username
+     * @return
+     */
     @GetMapping("/getHotSearchByUser")
     public Result<List<HotSearchVO>> getHotSearchByUser(String username){
         List<HotSearchVO> hotSearch = hotSearchService.getHotSearchByUser(username);
         return Result.success(hotSearch);
     }
 
+    /**
+     * 获取热搜排行，前10
+     * @return
+     */
     @GetMapping("/getHotSearchChart")
     public Result<List<String>> getHotSearchChart(){
         List<String> hotSearchChart = hotSearchService.getHotSearchChart();

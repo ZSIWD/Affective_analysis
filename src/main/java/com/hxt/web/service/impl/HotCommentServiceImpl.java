@@ -26,11 +26,14 @@ public class HotCommentServiceImpl implements HotCommentService {
     @Resource
     private HotCommentMapper hotCommentMapper;
 
+    /**
+     * 获取所有热评
+     * @param pageDTO
+     * @return
+     */
     @Override
     public List<HotComment> getHotCommentByPage(PageDTO pageDTO) {
-
         //开启分页
-
         PageHelper.startPage(pageDTO.getPage(),pageDTO.getSize());
         //查询
         List<HotComment> list = hotCommentMapper.getHotCommentByPage();
@@ -39,6 +42,11 @@ public class HotCommentServiceImpl implements HotCommentService {
     }
 
 
+    /**
+     * 获取每个城市的三种程度抑郁度占比
+     * @param pageDTO
+     * @return
+     */
     @Override
     public CityProp getDepressionProp(PageDTO pageDTO) {
         PageHelper.startPage(1, pageDTO.getSize());
@@ -60,24 +68,47 @@ public class HotCommentServiceImpl implements HotCommentService {
         cityProp.setLightData(lightData);
         cityProp.setMidData(midData);
         cityProp.setHardData(hardData);
-
-
         return cityProp;
 
     }
 
 
+    /**
+     * 获取星期抑郁度占比
+     * @return
+     */
     @Override
     public List<XinQiOv> getXinQi() {
-
         return hotCommentMapper.selectXinQi();
     }
 
 
+    /**
+     * 获取总的三种程度的抑郁占比
+     * @param currentTime
+     * @return
+     */
     @Override
     public DepLevelOv getDepLevelPercentage(String currentTime) {
         DepLevelOv dp = hotCommentMapper.getDepLevelPercentage(currentTime);
         System.out.println(dp);
         return dp;
+    }
+
+
+    /**
+     * 获取重度抑郁热评
+     * @param pageDTO
+     * @return
+     */
+    @Override
+    public List<HotComment> getDeepHotCommentByPage(PageDTO pageDTO) {
+        //开启分页
+
+        PageHelper.startPage(pageDTO.getPage(),pageDTO.getSize());
+        //查询
+        List<HotComment> list = hotCommentMapper.getDeepHotCommentByPage();
+
+        return list;
     }
 }

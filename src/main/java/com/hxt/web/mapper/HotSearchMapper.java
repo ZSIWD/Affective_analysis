@@ -16,15 +16,37 @@ public interface HotSearchMapper {
     @Insert("insert into hotSearch(userName, hotNewsLine, hotNewsTitle, hotCommentID, hotSearchComment, hotNewsLabel, hotSearchTime) values(#{userName}, #{hotNewsLine}, #{hotNewsTitle}, #{hotCommentID}, #{hotSearchComment}, #{hotNewsLabel}, #{hotSearchTime})")
     void insertHotSearch(HotSearch hotSearch);
 
+    /**
+     * 获取热搜
+     * @return
+     */
     Page<HotSearchVO> getHotSearch();
 
+    /**
+     * 获取热搜详情
+     * @param hotNewsLine
+     * @return
+     */
     Page<HotSearchDetailsVO> getDetails(Integer hotNewsLine);
 
+    /**
+     * 撤销热搜
+     * @param hotNewsLine
+     */
     @Update("update hotSearch set isDisabled = 1 where hotNewsLine = #{hotNewsLine}")
     void repeal(Integer hotNewsLine);
 
+    /**
+     * 根据用户获取热搜
+     * @param username
+     * @return
+     */
     List<HotSearchVO> getHotSearchByUser(String username);
 
+    /**
+     * 获取热搜排行，前10
+     * @return
+     */
     @Select("SELECT hotNewsTitle\n" +
             "FROM (\n" +
             "  SELECT hotNewsTitle,\n" +

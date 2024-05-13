@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hxt.web.mapper.HotSearchMapper">
+   <!--获取每个热搜，包括热搜的正面和负面占比-->
    <select id="getHotSearch" resultType="com.hxt.pojo.ov.HotSearchVO">
       SELECT
       hotNewsLine,hotNewsTitle,
@@ -17,13 +18,14 @@
       hotNewsTitle
    </select>
 
+   <!--获取某个热搜的详情-->
    <select id="getDetails" resultType="com.hxt.pojo.ov.HotSearchDetailsVO">
       SELECT userName, REGEXP_REPLACE(REPLACE(hotSearchComment, hotNewsTitle, ""),'[[:space:]]+',"") AS hotSearchComment, hotSearchTime,hotNewsLabel
       FROM hotsearch
       WHERE hotNewsLine = #{hotNewsLine}
    </select>
 
-
+   <!--得到某个用户评论过的热搜，根据用户搜索-->
    <select id="getHotSearchByUser" resultType="com.hxt.pojo.ov.HotSearchVO">
       SELECT
          hotNewsLine,hotNewsTitle,

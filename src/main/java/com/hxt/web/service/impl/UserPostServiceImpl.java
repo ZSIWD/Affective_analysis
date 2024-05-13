@@ -17,17 +17,35 @@ public class UserPostServiceImpl implements UserPostService {
 
     @Resource
     private UserPostMapper userPostMapper;
+
+    /**
+     * 根据用户获取热评
+     * @param userPostDTO
+     * @return
+     */
     @Override
     public PageResult getCommentByUser(UserPostDTO userPostDTO) {
+        //分页设置
         PageHelper.startPage(userPostDTO.getPage(),userPostDTO.getSize());
+        //得到用户名
         String userName = userPostDTO.getUserName();
+        //分页查询
         Page<UserPost> postByUser = userPostMapper.getCommentByUser(userName);
-        System.out.println(postByUser);
+        //如果没有该用户数据
+        if (postByUser.size()==0){
+            Page<UserPost> allComment = userPostMapper.getCommentByUser(null);
+        }
+        //返回数据
         PageResult pageResult = new PageResult();
         pageResult.setRecords(postByUser);
         pageResult.setTotal(postByUser.getTotal());
         return pageResult;
     }
+
+    /**
+     * 获取男女月份抑郁占比
+     * @return
+     */
 
     @Override
     public LineDataVo getLineData() {

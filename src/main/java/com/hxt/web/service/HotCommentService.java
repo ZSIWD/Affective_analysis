@@ -20,4 +20,6 @@ public interface HotCommentService {
     List<XinQiOv> getXinQi();
 
     DepLevelOv getDepLevelPercentage(String currentTime);
+
+    List<HotComment> getDeepHotCommentByPage(PageDTO pageDTO);
 }

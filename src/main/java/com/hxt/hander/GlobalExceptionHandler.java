@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     /**
-     * 捕获业务异常
+     * 捕获业务异常，统一返回给前端
      */
     @ExceptionHandler(BaseException.class)
     public Result ExceptionHandler(BaseException ex){
